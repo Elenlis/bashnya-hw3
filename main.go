@@ -1,18 +1,21 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
 
-// Stack — стек целых чисел
 type Stack struct {
 	data []int
 }
 
-// Push добавляет элемент на вершину
 func (s *Stack) Push(v int) {
 	s.data = append(s.data, v)
 }
 
-// Pop удаляет и возвращает верхний элемент
 func (s *Stack) Pop() (int, bool) {
 	if s.IsEmpty() {
 		return 0, false
@@ -22,27 +25,40 @@ func (s *Stack) Pop() (int, bool) {
 	return top, true
 }
 
-// IsEmpty проверяет, пуст ли стек
 func (s *Stack) IsEmpty() bool {
 	return len(s.data) == 0
 }
 
-// Size возвращает количество элементов
 func (s *Stack) Size() int {
 	return len(s.data)
 }
 
-// Clear очищает стек
 func (s *Stack) Clear() {
 	s.data = nil
 }
 
 func main() {
 	stack := &Stack{}
-	stack.Push(10)
-	stack.Push(20)
-	fmt.Println("Размер:", stack.Size()) // 2
+
+	fmt.Println("Введите числа через пробел для добавления в стек:")
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	input := scanner.Text()
+
+	parts := strings.Fields(input)
+	for _, part := range parts {
+		num, err := strconv.Atoi(part)
+		if err != nil {
+			fmt.Printf("Пропущено некорректное значение: %s\n", part)
+			continue
+		}
+		stack.Push(num)
+	}
+
+	fmt.Printf("Данные введены. Размер стека: %d\n", stack.Size())
 	if val, ok := stack.Pop(); ok {
-		fmt.Println("Вытолкнули:", val) // 20
+		fmt.Printf("Вытолкнули: %d\n", val)
+	} else {
+		fmt.Println("Стек пуст, выталкивать нечего.")
 	}
 }
